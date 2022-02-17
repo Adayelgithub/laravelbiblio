@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('nombre', 70);
             $table->string('author', 70);
             $table->string('publisher', 70);
+            $table->boolean('available');
 
             $table->unsignedBigInteger('category_id')->nullable();
             $table->foreign('category_id')->references('id')->on('categories');
