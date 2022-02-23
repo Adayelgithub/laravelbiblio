@@ -54,5 +54,14 @@ class BookSeeder extends Seeder
             "available" => $faker->boolean(true),
             "category_id" => $faker->randomElement($categories),
         ]);
+
+        DB::table("books")->insert([
+            "isbn" => $faker->isbn10(),
+            "nombre" => "Harry Potter y la Orden del Fénix",
+            "author" => "jk rowling",
+            "publisher" => "salamandra",
+            "available" => $faker->boolean(false),
+            "category_id" => $faker->randomElement($categories),
+        ]);
     }
 }

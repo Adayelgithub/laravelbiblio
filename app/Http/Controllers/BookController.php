@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -14,7 +15,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        $records = Book::all();
+        return view('book.index', compact('records'));
     }
 
     /**
@@ -22,9 +24,17 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function available()
+    {
+        $records = Book::all();
+        return view('book.available', compact('records'));
+    }
+
     public function create()
     {
-        //
+        $categories_list = Category::all();
+        return view('book.create' , compact('categories_list'));
     }
 
     /**
@@ -35,7 +45,16 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|min:3|max:255',
+            'author' => 'required|min:10|max:4096',
+            'publisher' => 'required|min:10|max:4096'
+        ]);
+        $input = $request->all();
+
+        Book::create($input , ['isbn' => "asd"]);
+
+        return redirect()->route('books.index')->with('success','Libro añadido con éxito.');
     }
 
     /**
@@ -46,7 +65,7 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        //
+        return view('book.show',compact('book'));
     }
 
     /**
@@ -57,7 +76,7 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+        return view('book.edit',compact('book'));
     }
 
     /**
@@ -69,7 +88,15 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|min:3|max:255',
+            'author' => 'required|min:10|max:4096',
+            'publisher' => 'required|min:10|max:4096'
+        ]);
+        $input = $request->all();
+
+        $book->update($input);
+        return redirect()->route('books.index')->with('success','Libro editado con éxito');
     }
 
     /**
@@ -80,6 +107,8 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+        $book->delete();
+        return redirect()->route('books.index')
+            ->with('success','Libro eliminado con éxito');
     }
 }

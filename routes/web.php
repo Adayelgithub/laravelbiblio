@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\BookController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +17,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
 
+Route::resource('books' , BookController::class);
+
+Route::resource('books',BookController::class)->middleware("auth");
+/*
+Route::get('/admin', function () {
+    return view('layout');
+})->middleware("auth");
+ */
+
+Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
