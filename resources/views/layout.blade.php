@@ -34,7 +34,9 @@
                    aria-haspopup="true" aria-expanded="false">Libros</a>
                 <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="{{ url('/books') }}">Ver Todos Libros</a>
+                    @if(@Auth::user()->hasRole('admin'))
                     <a class="dropdown-item" href="{{ url('/books/create') }}">Añadir nuevo libro </a>
+                    @endif
                 </div>
             </li>
             <li class="nav-item dropdown">
@@ -42,7 +44,9 @@
                    aria-haspopup="true" aria-expanded="false">Categorias</a>
                 <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="{{ url('/categories') }}">Ver Categorias </a>
+                    @if(@Auth::user()->hasRole('admin'))
                     <a class="dropdown-item" href="{{ url('/categories/create') }}">Añadir nueva Categoría </a>
+                    @endif
                 </div>
             </li>
             @auth()
@@ -66,6 +70,19 @@
                     </div>
                 </li>
             @endauth
+
+
+                <div class="d-flex justify-content-end" >
+                    <p class="rounded bg-info">Usuario: <span  class="text-warning">{{@Auth::user()->name }}</span> </p>
+                    @if(@Auth::user()->hasRole('cliente'))
+                     <p class="rounded bg-info"> Rol Actual: <span  class="text-warning"> Cliente </span> </p>
+                    @endif
+                    @if(@Auth::user()->hasRole('admin'))
+                        <p class="rounded bg-info"> Rol Actual:<span  class="text-warning">  Administrador </span></p>
+                    @endif
+                </div>
+
+
         </ul>
         <!-- Links -->
     </div>

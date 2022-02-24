@@ -50,12 +50,20 @@
 
                 <td class="d-flex">
                     <a class="btn btn-sm btn-info m-1" href="{{ route('books.show',$record->id) }}">Show</a>
+
+                    @if(@Auth::user()->hasRole('admin'))
+
                     <a class="btn btn-sm btn-primary m-1" href="{{ route('books.edit',$record->id) }}">Edit</a>
                     <form action="{{ route('books.destroy',$record->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <button onclick="return confirm('¿Estás seguro de eliminar el libro? {{$record->nombre}}')" type="submit" class="btn btn-sm btn-danger">Delete</button>
                     </form>
+
+                    @endif
+                    @if(@Auth::user()->hasRole('cliente'))
+                        <a class="btn btn-sm btn-success m-1" href="{{ route('loans.create',"id=".$record->id) }}">Solicitar Préstamo</a>
+                    @endif
                 </td>
             </tr>
 

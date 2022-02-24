@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
+use \App\Http\Controllers\LoanController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,6 +25,8 @@ Route::resource('books' , BookController::class);
 Route::resource('books',BookController::class)->middleware("auth");
 
 Route::resource('categories',CategoryController::class)->middleware("auth");
+
+Route::resource('loans',LoanController::class)->middleware("auth");
 /*
 Route::get('/admin', function () {
     return view('layout');

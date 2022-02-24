@@ -42,10 +42,9 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate(
-            ['nombre' => ['required',]],
-            ['nombre.required' => 'Nombre Requerido']
-        );
+        $request->validate([
+            'nombre' => 'required|unique:categories,nombre',
+        ]);
         $input = $request->all();
 
         Category::create($input);
@@ -87,7 +86,7 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $request->validate([
-            'nombre' => 'required|min:3|max:255',
+            'nombre' => 'required|unique:categories,nombre',
         ]);
         $input = $request->all();
 
@@ -112,7 +111,7 @@ class CategoryController extends Controller
         }
 
         return redirect()->route('categories.index')
-            ->with('success','Categoría eliminado con éxito');
+            ->with('success','Categoría eliminada con éxito');
 
 
     }

@@ -24,7 +24,7 @@ class LoanController extends Controller
      */
     public function create()
     {
-        //
+        return view('loan.create');
     }
 
     /**
@@ -35,7 +35,16 @@ class LoanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'scheduled_returned_date' => 'required|date_format:Y-m-d',
+            'observations' => 'required|min:10|max:100',
+        ]);
+        //$input = ['scheduled_returned_date' =>  strtotime($request['scheduled_returned_date'])];
+        $input = $request->all();
+
+        Loan::create($input);
+
+        return redirect()->route('books.index')->with('success','Solicitud de préstamos añadida con éxito.');
     }
 
     /**

@@ -41,12 +41,7 @@
                     <input type="text" name="publisher" value="{{ $book->publisher }}" class="form-control" placeholder="Editorial libro">
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <div class="form-group">
-                    <strong>Editorial</strong>
-                    <input type="text" name="publisher" value="{{ $book->publisher }}" class="form-control" placeholder="Editorial libro">
-                </div>
-            </div>
+
 
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <label class="control-label" for="basicinput"><strong>Categoría</strong></label>

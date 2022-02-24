@@ -24,8 +24,8 @@ return new class extends Migration
 
             $table->timestamp('loan_date')->useCurrent();
             $table->dateTime('scheduled_returned_date');
-            $table->dateTime('returned_date');
-            $table->integer('overdue_days');
+            $table->dateTime('returned_date')->nullable();
+            $table->integer('overdue_days')->nullable();
             $table->string('observations',200);
 
 
