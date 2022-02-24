@@ -35,7 +35,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Categoria:</strong>
-                {{ $book->category()->nombre }}
+                {{ $book->category->nombre }}
             </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12">

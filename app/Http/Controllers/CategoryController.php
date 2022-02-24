@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Unique;
+use mysql_xdevapi\Exception;
 
 class CategoryController extends Controller
 {
@@ -14,7 +17,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $records = Category::all();
+
+
+        return view('category.index', compact('records'));
     }
 
     /**
@@ -24,7 +30,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+
+        return view('category.create');
     }
 
     /**
@@ -35,7 +42,15 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate(
+            ['nombre' => ['required',]],
+            ['nombre.required' => 'Nombre Requerido']
+        );
+        $input = $request->all();
+
+        Category::create($input);
+
+        return redirect()->route('categories.index')->with('success','Categoría añadida con éxito.');
     }
 
     /**
@@ -46,7 +61,8 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        $books = Book::all();
+        return view('category.show',compact('category' ,'books'));
     }
 
     /**
@@ -57,7 +73,8 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+
+        return view('category.edit',compact('category'));
     }
 
     /**
@@ -69,7 +86,13 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|min:3|max:255',
+        ]);
+        $input = $request->all();
+
+        $category->update($input);
+        return redirect()->route('categories.index')->with('success','Categoría editada con éxito');
     }
 
     /**
@@ -80,6 +103,17 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        try {
+            $category->delete();
+        } catch (\Exception $e){
+
+            return redirect()->route('categories.index')
+                ->with('error','Error, existen libros con la categoría seleccionada');
+        }
+
+        return redirect()->route('categories.index')
+            ->with('success','Categoría eliminado con éxito');
+
+
     }
 }

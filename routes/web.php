@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\CategoryController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,11 +22,14 @@ Route::get('/', function () {
 Route::resource('books' , BookController::class);
 
 Route::resource('books',BookController::class)->middleware("auth");
+
+Route::resource('categories',CategoryController::class)->middleware("auth");
 /*
 Route::get('/admin', function () {
     return view('layout');
 })->middleware("auth");
  */
+Route::post('/',[ \App\Http\Controllers\HomeController::class, 'search']);
 
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
