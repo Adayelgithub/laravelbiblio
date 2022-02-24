@@ -1,6 +1,7 @@
 @extends('layout')
 
 @section('content')
+    <br>
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
@@ -9,26 +10,43 @@
         </div>
     </div>
 
+    <form method="POST" action="{{'/'}}">
+        @csrf
+        <div class="container d-flex justify-content-center pb-5">
+            <div class="col-6">
+                <input class="form-control" name="text" type="text" placeholder="buscar por el nombre">
+            </div>
+            <div class="col-1">
+                <button  class="btn btn-primary" type="submit">Buscar</button>
+            </div>
+
+        </div>
+    </form>
+
     @if ($message = Session::get('success'))
         <div class="alert alert-success">
             <p>{{ $message }}</p>
         </div>
+
     @endif
 
-    <table class="table table-bordered">
+    <div class="container">
+    <table class="table table-bordered table-hover">
         <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Autor</th>
-            <th>Editorial</th>
+            <th scope="col">ID</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Autor</th>
+            <th scope="col">Editorial</th>
+            <th scope="col">Categoria</th>
 
         </tr>
         @foreach ($records as $record)
             <tr>
-                <td> {{ $record->id }}</td>
+                <td>{{ $record->id }}</td>
                 <td>{{ $record->nombre }}</td>
                 <td>{{ $record->author }}</td>
                 <td>{{ $record->publisher }}</td>
+                <td>{{ $record->category->nombre }}</td>
 
                 <td class="d-flex">
                     <a class="btn btn-sm btn-info m-1" href="{{ route('books.show',$record->id) }}">Show</a>
@@ -36,11 +54,18 @@
                     <form action="{{ route('books.destroy',$record->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        <button onclick="return confirm('¿Estás seguro de eliminar el libro? {{$record->nombre}}')" type="submit" class="btn btn-sm btn-danger">Delete</button>
                     </form>
                 </td>
             </tr>
-        @endforeach
-    </table>
 
+        @endforeach
+
+    </table>
+    </div>
+
+@endsection
+
+@section('footer')
+    {{$records->links()}}
 @endsection

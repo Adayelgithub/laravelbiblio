@@ -15,8 +15,11 @@ class BookController extends Controller
      */
     public function index()
     {
-        $records = Book::all();
-        return view('book.index', compact('records'));
+        $records = Book::latest()->paginate(3);
+
+
+        return view('book.index', compact('records'))
+            ->with('i', (request()->input('page', 1) - 1) * 5);;
     }
 
     /**
@@ -25,11 +28,6 @@ class BookController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function available()
-    {
-        $records = Book::all();
-        return view('book.available', compact('records'));
-    }
 
     public function create()
     {
@@ -45,14 +43,17 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        $regex = '/^ISBN:(\d{9}(?:\d|X))$/';
+
         $request->validate([
-            'nombre' => 'required|min:3|max:255',
-            'author' => 'required|min:10|max:4096',
-            'publisher' => 'required|min:10|max:4096'
+            'nombre' => 'required|min:3|max:100',
+            'author' => 'required|min:10|max:100',
+            'publisher' => 'required|min:10|max:100',
+            'isbn' => 'required|min:10|max:10'
         ]);
         $input = $request->all();
 
-        Book::create($input , ['isbn' => "asd"]);
+        Book::create($input);
 
         return redirect()->route('books.index')->with('success','Libro añadido con éxito.');
     }
@@ -76,7 +77,8 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        return view('book.edit',compact('book'));
+        $categories_list = Category::all();
+        return view('book.edit',compact('book', 'categories_list'));
     }
 
     /**

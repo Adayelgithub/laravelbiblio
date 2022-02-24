@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>Edit Post</h2>
+                <h2>Edit Libro</h2>
             </div>
         </div>
     </div>
@@ -39,6 +39,28 @@
                 <div class="form-group">
                     <strong>Editorial</strong>
                     <input type="text" name="publisher" value="{{ $book->publisher }}" class="form-control" placeholder="Editorial libro">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <strong>Editorial</strong>
+                    <input type="text" name="publisher" value="{{ $book->publisher }}" class="form-control" placeholder="Editorial libro">
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <label class="control-label" for="basicinput"><strong>Categoría</strong></label>
+                <div class="controls">
+                    <select class="form-select" tabindex="1"  name="category_id"  id="category" data-form-field="category" data-placeholder="Select category.." class="span8">
+                        @foreach($categories_list as $category)
+                            @if($book->category->nombre == $category->nombre)
+                                {{ $select = "selected" }}
+                             @else
+                                {{ $select = "" }}
+                            @endif
+                            <option {{$select}} value="{{ $category->id }}">{{ $category->nombre }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 

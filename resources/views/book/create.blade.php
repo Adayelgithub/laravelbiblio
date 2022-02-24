@@ -39,11 +39,17 @@
                 <input type="text" name="publisher"  class="form-control" placeholder="Editorial libro">
             </div>
         </div>
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="form-group">
+                <strong>ISBN</strong>
+                <input type="text" name="isbn"  class="form-control" placeholder="ISBN libro">
+            </div>
+        </div>
 
-        <div class="control-group">
-            <label class="control-label" for="basicinput">Category</label>
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <label class="control-label" for="basicinput"><strong>Categoría</strong></label>
             <div class="controls">
-                <select tabindex="1" id="category" data-form-field="category" data-placeholder="Select category.." class="span8">
+                <select  class="form-select" tabindex="1"  name="category_id"  id="category" data-form-field="category" data-placeholder="Select category..">
                     @foreach($categories_list as $category)
                         <option value="{{ $category->id }}">{{ $category->nombre }}</option>
                     @endforeach
