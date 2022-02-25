@@ -1,39 +1,49 @@
 @extends('layout')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2> Información de la categoría: {{ $category->id }} {{ $category->nombre }}</h2>
-            </div>        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12">
-            <div class="form-group">
-                <strong>Nombre:</strong>
-                {{ $category->nombre }}
-            </div>
-        </div>
-    </div>
-    <h3>Libros de la categoría actual</h3>
+
+
+    <h2>Mis Préstamos:</h2>
     <table class="table table-bordered table-hover">
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Autor</th>
-            <th scope="col">Editorial</th>
+            <th scope="col">Nombre libro </th>
+            <th scope="col">Fecha Creación del Préstamo</th>
+            <th scope="col">Fecha de devolución acordada</th>
+            <th scope="col">Fecha de la devolución</th>
+            <th scope="col">Días Atrasados devolución</th>
+            <th scope="col">Observaciones</th>
         </tr>
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                @foreach($books as $book)
-                    @if($book->category->nombre == $category->nombre)
+                @foreach($loans as $loan)
+                    @if($loan->loan_date != null && $loan->returned_date == null)
+                    @if($loan->user_id == $user)
                         <tr>
-                            <td>{{ $book->id }}</td>
-                            <td>{{ $book->nombre }}</td>
-                            <td>{{ $book->author }}</td>
-                            <td>{{ $book->publisher }}</td>
+                            @foreach ($books as $book)
+                                @if($loan->book_id == $book->id)
+                                    <td>{{ $book->nombre }}</td>
+                                @endif
+                            @endforeach
+                            <td>{{ $loan->loan_date }}</td>
+                            <td>{{ $loan->scheduled_returned_date }}</td>
+                            <td>{{ $loan->returned_date }}</td>
+                            <td>{{ $loan->overdue_days }}</td>
+                            <td>{{ $loan->observations }}</td>
+                            <td class="">
+                             @if(@Auth::user()->hasRole('cliente'))
+                                 <form action="{{ route('loans.update',$loan->id) }}" method="POST">
+
+
+
+                                    @csrf
+                                    @method('PUT')
+                                     <button   type="submit" class="btn btn-sm btn-success m-1">Devolver Libro</button>
+                                 </form>
+                              @endif
+                            </td>
                         </tr>
+                    @endif
                     @endif
 
                 @endforeach
@@ -44,5 +54,5 @@
 
 
     </table>
-    <a type="" class="btn btn-primary" href="{{ url('/categories') }}">Return</a>
+    <a type="" class="btn btn-primary" href="{{ url('/books') }}">Return</a>
 @endsection

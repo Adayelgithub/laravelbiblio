@@ -26,7 +26,7 @@ return new class extends Migration
             $table->dateTime('scheduled_returned_date');
             $table->dateTime('returned_date')->nullable();
             $table->integer('overdue_days')->nullable();
-            $table->string('observations',200);
+            $table->string('observations',200)->nullable();
 
 
 

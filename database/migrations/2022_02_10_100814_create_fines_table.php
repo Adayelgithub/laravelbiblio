@@ -21,10 +21,10 @@ return new class extends Migration
             $table->unsignedBigInteger('loan_id')->nullable();
             $table->foreign('loan_id')->references('id')->on('loans');
 
-            $table->dateTime('fine_start_date');
+            $table->dateTime('fine_start_date')->useCurrent();
             $table->dateTime('fine_end_date');
             $table->float('fine_amount');
-            $table->string('observations',200);
+            $table->string('observations',200)->nullable();
             $table->timestamps();
         });
     }

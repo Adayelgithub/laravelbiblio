@@ -58,8 +58,8 @@
                         <a class="dropdown-item" href="{{ url('/loans') }}">Ver Préstamos </a>
                     @endif
 
-                    @if(@Auth::user()->hasRole('admin'))
-
+                    @if(@Auth::user()->hasRole('cliente'))
+                            <a class="dropdown-item" href="{{ route('loans.show',@Auth::user()->id)  }}">Ver Mis Préstamos </a>
                     @endif
                 </div>
             </li>

@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Loan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Auth;
 
 class LoanController extends Controller
 {
@@ -17,9 +18,9 @@ class LoanController extends Controller
     public function index()
     {
         $records = Loan::all();
-
-
-        return view('loan.index', compact('records'));
+        $books = Book::all();
+        $users = User::all();
+        return view('loan.index', compact('records','books','users'));
     }
 
     /**
@@ -46,7 +47,7 @@ class LoanController extends Controller
         $end_date = date('Y-m-d', strtotime(' +6 day'));
         $request->validate([
             'scheduled_returned_date' => 'required|date_format:Y-m-d|date|before:'.$end_date.'|date|after:'.$current_date,
-            'observations' => 'required|min:10|max:100',
+
         ]);
         //$input = ['scheduled_returned_date' =>  strtotime($request['scheduled_returned_date'])];
         //$input = ['book_id' => $book->nombre , 'user_id' => $user->name];
@@ -63,9 +64,11 @@ class LoanController extends Controller
      * @param  \App\Models\Loan  $loan
      * @return \Illuminate\Http\Response
      */
-    public function show(Loan $loan)
+    public function show($user)
     {
-        //
+        $books = Book::all();
+        $loans = Loan::all();
+        return view('loan.show',compact('user','loans','books'));
     }
 
     /**
@@ -86,9 +89,40 @@ class LoanController extends Controller
      * @param  \App\Models\Loan  $loan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Loan $loan)
+
+    public function update($id)
     {
-        //
+        if(@Auth::user()->hasRole('admin')){
+
+
+        $book_id = Loan::all()->find($id)->book->id;
+
+        $payment = Book::findOrFail($book_id);
+        $payment->available = 0;
+        $payment->saveOrFail();
+
+
+        $loan = Loan::all()->find($id);
+
+
+        $current_date = date("Y-m-d H:i:s");
+        $loan->update(['loan_date' => $current_date ]);
+        return redirect()->route('loans.index')->with('success','Préstamo realizado con éxito');
+        } else {
+
+
+            $book_id = Loan::all()->find($id)->book->id;
+
+            $payment = Book::findOrFail($book_id);
+            $payment->available = 1;
+            $payment->saveOrFail();
+
+            $loan = Loan::all()->find($id);
+
+            $current_date = date("Y-m-d H:i:s");
+            $loan->update(['returned_date' => $current_date ]);
+            return redirect()->route('books.index')->with('success','Libro devuelto con éxito');
+        }
     }
 
     /**
@@ -99,6 +133,14 @@ class LoanController extends Controller
      */
     public function destroy(Loan $loan)
     {
-        //
+        $book_id = Loan::all()->find($loan)->book->id;
+
+        $payment = Book::findOrFail($book_id);
+        $payment->available = 1;
+        $payment->saveOrFail();
+
+        $loan->delete();
+        return redirect()->route('loans.index')
+            ->with('success','Préstamo rechazado con éxito');
     }
 }

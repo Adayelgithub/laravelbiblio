@@ -21,22 +21,50 @@
         </div>
     @endif
 
-    <div class="container">
+    <div class="container" style="">
     <table class="table table-bordered table-hover">
         <tr>
-            <th scope="col">ID Libro</th>
-            <th scope="col">ID Usuario</th>
+            <th scope="col">ID</th>
+            <th scope="col">Nombre Libro</th>
+            <th scope="col">Nombre Usuario</th>
+            <th scope="col">Correo Usuario</th>
             <th scope="col">Fecha Creación del Préstamo</th>
             <th scope="col">Fecha de devolución acordada</th>
             <th scope="col">Fecha de la devolución</th>
-            <th scope="col">Días Atrasados</th>
+            <th scope="col">Días Atrasados devolución</th>
             <th scope="col">Observaciones</th>
+
+
 
         </tr>
         @foreach ($records as $record)
-            <tr>
-                <td>{{ $record->book_id }}</td>
-                <td>{{ $record->user_id }}</td>
+            @if($record->returned_date != null )
+                <?php $color = "bg-warning text-dark"; ?>
+            @else
+                <?php $color = "bg-success text-dark"; ?>
+            @endif
+
+            @if($record->loan_date != null )
+                <?php $disabled = "none"; ?>
+            @else
+                <?php $disabled = ""; $color = "bg-primary text-white"; ?>
+            @endif
+
+
+            <tr class="{{ $color }}  ">
+                <td>{{ $record->id }}</td>
+
+                @foreach ($books as $book)
+                    @if($record->book_id == $book->id)
+                        <td>{{ $book->nombre }}</td>
+                    @endif
+                @endforeach
+                @foreach ($users as $user)
+                     @if($record->user_id == $user->id)
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->email }}</td>
+                     @endif
+                @endforeach
                 <td>{{ $record->loan_date }}</td>
                 <td>{{ $record->scheduled_returned_date }}</td>
                 <td>{{ $record->returned_date }}</td>
@@ -45,20 +73,26 @@
 
 
 
+                <td>
 
-                <td class="d-flex">
-                    <a class="btn btn-sm btn-info m-1" href="{{ route('categories.show',$record->id) }}">Show</a>
                     @if(@Auth::user()->hasRole('admin'))
-                    <a class="btn btn-sm btn-primary m-1" href="{{ route('categories.edit',$record->id) }}">Edit</a>
-                    <form action="{{ route('categories.destroy',$record->id) }}" method="POST">
+                        <form action="{{ route('loans.update',$record->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+
+                            <button style="display: {{ $disabled }}" onclick="return confirm('¿Estás seguro de Aceptar el préstamo? {{$record->id}}')" type="submit" class="btn btn-sm btn-success m-1">Aceptar</button>
+                        </form>
+
+                    <form action="{{ route('loans.destroy',$record->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <button onclick="return confirm('¿Estás seguro de eliminar la categoría? {{$record->nombre}}')" type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        <button onclick="return confirm('¿Estás seguro de rechazar el préstamo? {{$record->id}}')" type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                     </form>
                     @endif
                 </td>
 
             </tr>
+
         @endforeach
     </table>
     </div>

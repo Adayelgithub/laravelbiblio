@@ -28,7 +28,7 @@ Route::resource('categories',CategoryController::class)->middleware("auth");
 
 Route::resource('loans',LoanController::class)->middleware("auth");
 
-//Route::get('loans/{book}', 'LoanController@create')->name('loans.create');
+//Route::put('loans/{loan}', 'LoanController@updateClienteFechaDevolucion')->name('loans.update2');
 /*
 Route::get('/admin', function () {
     return view('layout');
