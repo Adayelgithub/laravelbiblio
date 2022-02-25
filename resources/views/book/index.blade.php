@@ -61,7 +61,7 @@
                     </form>
 
                     @endif
-                    @if(@Auth::user()->hasRole('cliente'))
+                    @if(@Auth::user()->hasRole('cliente') && $record->available == 1 )
                         <a class="btn btn-sm btn-success m-1" href="{{ route('loans.create',"id=".$record->id) }}">Solicitar Préstamo</a>
                     @endif
                 </td>

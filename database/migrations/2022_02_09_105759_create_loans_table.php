@@ -22,7 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
 
-            $table->timestamp('loan_date')->useCurrent();
+            $table->dateTime('loan_date')->nullable();
             $table->dateTime('scheduled_returned_date');
             $table->dateTime('returned_date')->nullable();
             $table->integer('overdue_days')->nullable();

@@ -17,6 +17,8 @@ class User extends Authenticatable
     public function  loans(){
         return $this->hasMany(Loan::class);
     }
+
+
     /**
      * The attributes that are mass assignable.
      *

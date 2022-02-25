@@ -39,6 +39,7 @@
                     @endif
                 </div>
             </li>
+
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">Categorias</a>
@@ -49,6 +50,20 @@
                     @endif
                 </div>
             </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">Préstamos</a>
+                <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+                    @if(@Auth::user()->hasRole('admin'))
+                        <a class="dropdown-item" href="{{ url('/loans') }}">Ver Préstamos </a>
+                    @endif
+
+                    @if(@Auth::user()->hasRole('admin'))
+
+                    @endif
+                </div>
+            </li>
+
             @auth()
                 <li class="nav-item dropdown">
                     <a class="dropdown-item" href="{{ route('logout') }}"

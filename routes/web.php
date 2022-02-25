@@ -27,6 +27,8 @@ Route::resource('books',BookController::class)->middleware("auth");
 Route::resource('categories',CategoryController::class)->middleware("auth");
 
 Route::resource('loans',LoanController::class)->middleware("auth");
+
+//Route::get('loans/{book}', 'LoanController@create')->name('loans.create');
 /*
 Route::get('/admin', function () {
     return view('layout');

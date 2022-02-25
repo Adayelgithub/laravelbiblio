@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\Loan;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class LoanController extends Controller
@@ -14,17 +16,22 @@ class LoanController extends Controller
      */
     public function index()
     {
-        //
+        $records = Loan::all();
+
+
+        return view('loan.index', compact('records'));
     }
 
     /**
      * Show the form for creating a new resource.
      *
+     * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        return view('loan.create');
+        $books = Book::all();
+        return view('loan.create',compact('books'));
     }
 
     /**
@@ -35,11 +42,14 @@ class LoanController extends Controller
      */
     public function store(Request $request)
     {
+        $current_date = date('Y-m-d', strtotime("now"));
+        $end_date = date('Y-m-d', strtotime(' +6 day'));
         $request->validate([
-            'scheduled_returned_date' => 'required|date_format:Y-m-d',
+            'scheduled_returned_date' => 'required|date_format:Y-m-d|date|before:'.$end_date.'|date|after:'.$current_date,
             'observations' => 'required|min:10|max:100',
         ]);
         //$input = ['scheduled_returned_date' =>  strtotime($request['scheduled_returned_date'])];
+        //$input = ['book_id' => $book->nombre , 'user_id' => $user->name];
         $input = $request->all();
 
         Loan::create($input);

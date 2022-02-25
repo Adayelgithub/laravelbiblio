@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>Categorías</h2>
+                <h2>Préstamos</h2>
             </div>
         </div>
     </div>
@@ -24,13 +24,27 @@
     <div class="container">
     <table class="table table-bordered table-hover">
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Nombre</th>
+            <th scope="col">ID Libro</th>
+            <th scope="col">ID Usuario</th>
+            <th scope="col">Fecha Creación del Préstamo</th>
+            <th scope="col">Fecha de devolución acordada</th>
+            <th scope="col">Fecha de la devolución</th>
+            <th scope="col">Días Atrasados</th>
+            <th scope="col">Observaciones</th>
+
         </tr>
         @foreach ($records as $record)
             <tr>
-                <td>{{ $record->id }}</td>
-                <td>{{ $record->nombre }}</td>
+                <td>{{ $record->book_id }}</td>
+                <td>{{ $record->user_id }}</td>
+                <td>{{ $record->loan_date }}</td>
+                <td>{{ $record->scheduled_returned_date }}</td>
+                <td>{{ $record->returned_date }}</td>
+                <td>{{ $record->overdue_days }}</td>
+                <td>{{ $record->observations }}</td>
+
+
+
 
                 <td class="d-flex">
                     <a class="btn btn-sm btn-info m-1" href="{{ route('categories.show',$record->id) }}">Show</a>
