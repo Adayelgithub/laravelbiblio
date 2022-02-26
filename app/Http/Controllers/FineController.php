@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\Fine;
+use App\Models\Loan;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FineController extends Controller
 {
@@ -14,7 +18,26 @@ class FineController extends Controller
      */
     public function index()
     {
-        //
+
+        $records = Fine::all();
+        $current_date = date("Y-m-d H:i:s");
+        foreach ($records as $fine){
+            $current_dateDateTime = new \DateTime($current_date);
+            $fine_end_date_DateTime = new \DateTime($fine->fine_end_date);
+            if($current_dateDateTime > $fine_end_date_DateTime ){
+                //$fine->fine_active = 0;
+                $payment = Fine::findOrFail($fine->id);
+                $payment->fine_active = 0;
+                $payment->saveOrFail();
+
+            }
+        }
+
+        $records = Fine::all();
+        $loans = Loan::all();
+        $users = User::all();
+
+        return view('fine.index', compact('records', 'users' , 'loans'));
     }
 
     /**
@@ -24,7 +47,9 @@ class FineController extends Controller
      */
     public function create()
     {
-        //
+        $loans = Loan::all();
+        $users = User::all();
+        return view('fine.create',compact('loans','users'));
     }
 
     /**
@@ -35,7 +60,11 @@ class FineController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->all();
+
+        Fine::create($input);
+
+        return redirect()->route('fines.index')->with('success','Penalización añadida con éxito.');
     }
 
     /**
@@ -44,9 +73,16 @@ class FineController extends Controller
      * @param  \App\Models\Fine  $fine
      * @return \Illuminate\Http\Response
      */
-    public function show(Fine $fine)
+    public function show($user)
     {
-        //
+        if(@Auth::user()->id == $user ){
+            $books = Book::all();
+            $fines = Fine::all();
+            $loans = Loan::all();
+            return view('fine.show',compact('user','fines','books','loans'));
+        }
+
+        return redirect()->route('books.index')->with('error','No tienes permiso');
     }
 
     /**
@@ -80,6 +116,8 @@ class FineController extends Controller
      */
     public function destroy(Fine $fine)
     {
-        //
+        $fine->delete();
+        return redirect()->route('fines.index')
+            ->with('success','Penalización eliminada con éxito');
     }
 }

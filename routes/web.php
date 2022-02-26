@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use \App\Http\Controllers\LoanController;
+use \App\Http\Controllers\FineController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,6 +28,8 @@ Route::resource('books',BookController::class)->middleware("auth");
 Route::resource('categories',CategoryController::class)->middleware("auth");
 
 Route::resource('loans',LoanController::class)->middleware("auth");
+
+Route::resource('fines',FineController::class)->middleware("auth");
 
 //Route::put('loans/{loan}', 'LoanController@updateClienteFechaDevolucion')->name('loans.update2');
 /*

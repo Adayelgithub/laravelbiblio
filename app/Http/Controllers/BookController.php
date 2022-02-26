@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\Fine;
+use App\Models\Loan;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -16,9 +18,10 @@ class BookController extends Controller
     public function index()
     {
         $records = Book::latest()->paginate(3);
+        $loans = Loan::all();
+        $fines = Fine::all();
 
-
-        return view('book.index', compact('records'))
+        return view('book.index', compact('records' ,'loans' ,'fines'))
             ->with('i', (request()->input('page', 1) - 1) * 5);;
     }
 

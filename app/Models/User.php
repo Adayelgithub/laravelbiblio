@@ -18,6 +18,10 @@ class User extends Authenticatable
         return $this->hasMany(Loan::class);
     }
 
+    public function  fines(){
+        return $this->hasMany(Fine::class);
+    }
+
 
     /**
      * The attributes that are mass assignable.

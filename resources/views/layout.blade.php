@@ -64,6 +64,20 @@
                 </div>
             </li>
 
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">Penalizaciones</a>
+                <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+                    @if(@Auth::user()->hasRole('admin'))
+                        <a class="dropdown-item" href="{{ url('/fines') }}">Ver Penalizaciones </a>
+                    @endif
+
+                    @if(@Auth::user()->hasRole('cliente'))
+                        <a class="dropdown-item" href="{{ route('fines.show',@Auth::user()->id)  }}">Ver Mis Penalizaciones </a>
+                    @endif
+                </div>
+            </li>
+
             @auth()
                 <li class="nav-item dropdown">
                     <a class="dropdown-item" href="{{ route('logout') }}"

@@ -23,7 +23,7 @@ return new class extends Migration
 
             $table->dateTime('fine_start_date')->useCurrent();
             $table->dateTime('fine_end_date');
-            $table->float('fine_amount');
+            $table->boolean('fine_active');
             $table->string('observations',200)->nullable();
             $table->timestamps();
         });

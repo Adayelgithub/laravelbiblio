@@ -17,6 +17,11 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 @foreach($loans as $loan)
+                    @if($loan->overdue_days != null )
+                        <?php $color = "bg-danger text-dark"; ?>
+                    @else
+                        <?php $color = ""; ?>
+                    @endif
                     @if($loan->loan_date != null && $loan->returned_date == null)
                     @if($loan->user_id == $user)
                         <tr>
@@ -28,7 +33,7 @@
                             <td>{{ $loan->loan_date }}</td>
                             <td>{{ $loan->scheduled_returned_date }}</td>
                             <td>{{ $loan->returned_date }}</td>
-                            <td>{{ $loan->overdue_days }}</td>
+                            <td class="{{$color}}">{{ $loan->overdue_days }}</td>
                             <td>{{ $loan->observations }}</td>
                             <td class="">
                              @if(@Auth::user()->hasRole('cliente'))
