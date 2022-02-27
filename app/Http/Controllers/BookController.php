@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Fine;
 use App\Models\Loan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -17,7 +18,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $records = Book::latest()->paginate(3);
+        $records = Book::latest()->paginate(4);
         $loans = Loan::all();
         $fines = Fine::all();
 
@@ -34,8 +35,12 @@ class BookController extends Controller
 
     public function create()
     {
-        $categories_list = Category::all();
-        return view('book.create' , compact('categories_list'));
+        if(@Auth::user()->hasRole('admin')){
+            $categories_list = Category::all();
+            return view('book.create' , compact('categories_list'));
+
+        }
+        return redirect()->route('books.index')->with('error','No tienes permisos');
     }
 
     /**
@@ -46,19 +51,25 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $regex = '/^ISBN:(\d{9}(?:\d|X))$/';
 
-        $request->validate([
-            'nombre' => 'required|min:3|max:100',
-            'author' => 'required|min:10|max:100',
-            'publisher' => 'required|min:10|max:100',
-            'isbn' => 'required|min:10|max:10'
-        ]);
-        $input = $request->all();
+        if(@Auth::user()->hasRole('admin')){
+            $regex = '/^ISBN:(\d{9}(?:\d|X))$/';
 
-        Book::create($input);
+            $request->validate([
+                'nombre' => 'required|min:3|max:100',
+                'author' => 'required|min:5|max:100',
+                'publisher' => 'required|min:5|max:100',
+                'isbn' => 'required|min:10|max:10'
+            ]);
+            $input = $request->all();
 
-        return redirect()->route('books.index')->with('success','Libro añadido con éxito.');
+            Book::create($input);
+
+            return redirect()->route('books.index')->with('success','Libro añadido con éxito.');
+
+        }
+
+        return redirect()->route('books.index')->with('error','No tienes permisos');
     }
 
     /**
@@ -80,8 +91,14 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        $categories_list = Category::all();
-        return view('book.edit',compact('book', 'categories_list'));
+        if(@Auth::user()->hasRole('admin')){
+            $categories_list = Category::all();
+            return view('book.edit',compact('book', 'categories_list'));
+
+        }
+
+        return redirect()->route('books.index')->with('error','No tienes permisos');
+
     }
 
     /**
@@ -93,15 +110,18 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $request->validate([
-            'nombre' => 'required|min:3|max:255',
-            'author' => 'required|min:10|max:4096',
-            'publisher' => 'required|min:10|max:4096'
-        ]);
-        $input = $request->all();
+        if(@Auth::user()->hasRole('admin')){
+            $request->validate([
+                'nombre' => 'required|min:3|max:255',
+                'author' => 'required|min:10|max:4096',
+                'publisher' => 'required|min:10|max:4096'
+            ]);
+            $input = $request->all();
 
-        $book->update($input);
-        return redirect()->route('books.index')->with('success','Libro editado con éxito');
+            $book->update($input);
+            return redirect()->route('books.index')->with('success','Libro editado con éxito');
+        }
+        return redirect()->route('books.index')->with('error','No tienes permisos');
     }
 
     /**
@@ -112,8 +132,12 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        $book->delete();
-        return redirect()->route('books.index')
-            ->with('success','Libro eliminado con éxito');
+        if(@Auth::user()->hasRole('admin')){
+            $book->delete();
+            return redirect()->route('books.index')
+                ->with('success','Libro eliminado con éxito');
+        }
+        return redirect()->route('books.index')->with('error','No tienes permisos');
+
     }
 }

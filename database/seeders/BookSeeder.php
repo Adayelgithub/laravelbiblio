@@ -60,7 +60,53 @@ class BookSeeder extends Seeder
             "nombre" => "Harry Potter y la Orden del Fénix",
             "author" => "jk rowling",
             "publisher" => "salamandra",
-            "available" => $faker->boolean(false),
+            "available" => $faker->boolean(true),
+            "category_id" => $faker->randomElement($categories),
+        ]);
+
+        DB::table("books")->insert([
+            "isbn" => $faker->isbn10(),
+            "nombre" => "Harry Potter y el misterio del príncipe",
+            "author" => "jk rowling",
+            "publisher" => "salamandra",
+            "available" => $faker->boolean(true),
+            "category_id" => $faker->randomElement($categories),
+        ]);
+
+        DB::table("books")->insert([
+            "isbn" => $faker->isbn10(),
+            "nombre" => "Harry Potter y las reliquias de la Muerte",
+            "author" => "jk rowling",
+            "publisher" => "salamandra",
+            "available" => $faker->boolean(true),
+            "category_id" => $faker->randomElement($categories),
+        ]);
+
+
+        DB::table("books")->insert([
+            "isbn" => $faker->isbn10(),
+            "nombre" => "El Señor de los Anillos, La Comunidad del Anillo",
+            "author" => "J. R. R. Tolkien",
+            "publisher" => "George Allen & Unwin",
+            "available" => $faker->boolean(true),
+            "category_id" => $faker->randomElement($categories),
+        ]);
+
+        DB::table("books")->insert([
+            "isbn" => $faker->isbn10(),
+            "nombre" => "El Señor de los Anillos, Las dos torres",
+            "author" => "J. R. R. Tolkien",
+            "publisher" => "George Allen & Unwin",
+            "available" => $faker->boolean(true),
+            "category_id" => $faker->randomElement($categories),
+        ]);
+
+        DB::table("books")->insert([
+            "isbn" => $faker->isbn10(),
+            "nombre" => "El Señor de los Anillos, El retorno del Rey",
+            "author" => "J. R. R. Tolkien",
+            "publisher" => "George Allen & Unwin",
+            "available" => $faker->boolean(true),
             "category_id" => $faker->randomElement($categories),
         ]);
     }

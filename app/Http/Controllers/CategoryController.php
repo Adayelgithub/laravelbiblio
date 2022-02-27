@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Unique;
 use mysql_xdevapi\Exception;
 
@@ -30,8 +31,10 @@ class CategoryController extends Controller
      */
     public function create()
     {
-
-        return view('category.create');
+        if(@Auth::user()->hasRole('admin')){
+            return view('category.create');
+        }
+        return redirect()->route('books.index')->with('error','No tienes permisos');
     }
 
     /**
@@ -42,14 +45,19 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|unique:categories,nombre',
-        ]);
-        $input = $request->all();
+        if(@Auth::user()->hasRole('admin')){
+            $request->validate([
+                'nombre' => 'required|unique:categories,nombre',
+            ]);
+            $input = $request->all();
 
-        Category::create($input);
+            Category::create($input);
 
-        return redirect()->route('categories.index')->with('success','Categoría añadida con éxito.');
+            return redirect()->route('categories.index')->with('success','Categoría añadida con éxito.');
+        }
+        return redirect()->route('books.index')->with('error','No tienes permisos');
+
+
     }
 
     /**
@@ -72,8 +80,11 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
+        if(@Auth::user()->hasRole('admin')){
+            return view('category.edit',compact('category'));
+        }
+        return redirect()->route('books.index')->with('error','No tienes permisos');
 
-        return view('category.edit',compact('category'));
     }
 
     /**
@@ -85,13 +96,19 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        $request->validate([
-            'nombre' => 'required|unique:categories,nombre',
-        ]);
-        $input = $request->all();
 
-        $category->update($input);
-        return redirect()->route('categories.index')->with('success','Categoría editada con éxito');
+        if(@Auth::user()->hasRole('admin')){
+            $request->validate([
+                'nombre' => 'required|unique:categories,nombre',
+            ]);
+            $input = $request->all();
+
+            $category->update($input);
+            return redirect()->route('categories.index')->with('success','Categoría editada con éxito');
+        }
+        return redirect()->route('books.index')->with('error','No tienes permisos');
+
+
     }
 
     /**
@@ -102,16 +119,20 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        try {
-            $category->delete();
-        } catch (\Exception $e){
-
+        if(@Auth::user()->hasRole('admin')){
+            try {
+                $category->delete();
+            } catch (\Exception $e){
+                return redirect()->route('categories.index')
+                    ->with('error','Error, existen libros con la categoría seleccionada');
+            }
             return redirect()->route('categories.index')
-                ->with('error','Error, existen libros con la categoría seleccionada');
+                ->with('success','Categoría eliminada con éxito');
         }
 
-        return redirect()->route('categories.index')
-            ->with('success','Categoría eliminada con éxito');
+        return redirect()->route('books.index')->with('error','No tienes permisos');
+
+
 
 
     }

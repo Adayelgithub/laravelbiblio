@@ -22,7 +22,7 @@
     @endif
 
     <div class="container" style="">
-    <table class="table table-bordered table-hover">
+    <table class="table table-responsive-xl table-bordered table-hover">
         <tr>
             <th scope="col">ID</th>
             <th scope="col">ID Usuario</th>

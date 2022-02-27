@@ -18,27 +18,28 @@ class LoanController extends Controller
      */
     public function index()
     {
-        $records = Loan::all();
-        foreach ($records as $loan){
-            $current_date = date("Y-m-d H:i:s");
-            $scheduled_returned_date = $loan->scheduled_returned_date;
-            $current_dateDateTime = new \DateTime($current_date);
-            $scheduled_returned_date_dateDateTime = new \DateTime($scheduled_returned_date);
-            if($current_dateDateTime > $scheduled_returned_date_dateDateTime ){
-                $interval = $current_dateDateTime->diff($scheduled_returned_date_dateDateTime);
-                if($loan->loan_date != null && $loan->returned_date == null){
-                    $loan->update(['overdue_days' => $interval->days ]);
+        if(@\Illuminate\Support\Facades\Auth::user()->hasRole('admin')){
+            $records = Loan::all();
+            foreach ($records as $loan){
+                $current_date = date("Y-m-d H:i:s");
+                $scheduled_returned_date = $loan->scheduled_returned_date;
+                $current_dateDateTime = new \DateTime($current_date);
+                $scheduled_returned_date_dateDateTime = new \DateTime($scheduled_returned_date);
+                if($current_dateDateTime > $scheduled_returned_date_dateDateTime ){
+                    $interval = $current_dateDateTime->diff($scheduled_returned_date_dateDateTime);
+                    if($loan->loan_date != null && $loan->returned_date == null){
+                        $loan->update(['overdue_days' => $interval->days ]);
+                    }
                 }
             }
+
+            $fines = Fine::all();
+            $books = Book::all();
+            $users = User::all();
+            return view('loan.index', compact('records','books','users', 'fines'));
         }
+        return redirect()->route('books.index')->with('error','No tienes permisos');
 
-
-
-
-        $fines = Fine::all();
-        $books = Book::all();
-        $users = User::all();
-        return view('loan.index', compact('records','books','users', 'fines'));
     }
 
     /**
@@ -63,14 +64,20 @@ class LoanController extends Controller
     {
         $current_date = date('Y-m-d', strtotime("now"));
         $end_date = date('Y-m-d', strtotime(' +6 day'));
-       /* $request->validate([
+
+        $request->validate([
             'scheduled_returned_date' => 'required|date_format:Y-m-d|date|before:'.$end_date.'|date|after:'.$current_date,
 
-        ]);*/
+        ]);
         //$input = ['scheduled_returned_date' =>  strtotime($request['scheduled_returned_date'])];
         //$input = ['book_id' => $book->nombre , 'user_id' => $user->name];
-        $input = $request->all();
 
+        $input = $request->all();
+        $input_date = new \DateTime($input['scheduled_returned_date']);
+        $input_date->modify('+23 hours');
+        $input_date->modify('+55 minutes');
+        $input['scheduled_returned_date'] = $input_date;
+        //$input += (['scheduled_returned_date' => $current_date ]);
         Loan::create($input);
 
         return redirect()->route('books.index')->with('success','Solicitud de préstamos añadida con éxito.');
@@ -186,27 +193,18 @@ class LoanController extends Controller
      */
     public function destroy(Loan $loan)
     {
-/*
-        $fines = Fine::all();
-        foreach ($fines as $fine){
-          if($fine->loan_id == $loan->id){
-              $fine_borrar = $fine->id;
-          }
-
-        }
-
-        $payment = Fine::findOrFail($fine_borrar);
-        $payment->delete();
-        $payment->saveOrFail();
-*/
-
-        try {
-            $loan->delete();
-        } catch (\Exception $e){
+        if(@\Illuminate\Support\Facades\Auth::user()->hasRole('admin')){
+            try {
+                $loan->delete();
+            } catch (\Exception $e){
+                return redirect()->route('loans.index')
+                    ->with('error','No se puede borrar el préstamo ID: ' . $loan->id.' existe una penalización con este préstamo');
+            }
             return redirect()->route('loans.index')
-                ->with('error','No se puede borrar el préstamo ID: ' . $loan->id.' existe una penalización con este préstamo');
+                ->with('success','Préstamo rechazado con éxito');
         }
-        return redirect()->route('loans.index')
-            ->with('success','Préstamo rechazado con éxito');
+        return redirect()->route('books.index')->with('error','No tienes permisos');
+
+
     }
 }

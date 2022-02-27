@@ -78,6 +78,21 @@
     <main class="py-4">
         @yield('content')
     </main>
+    <h1 class="text-center"> Aday Biblio Web </h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+
+            </div>
+            <div class="col-6 bg-primary text-white text-center me-4 border border-dark rounded " style="height: 20vh">
+                <a class="text-center" href="{{ url('/books') }}"> <button class="btn btn-sm btn-success text-warning mt-5"> INICIAR </button></a>
+            </div>
+            <div class="col-3">
+
+            </div>
+        </div>
+    </div>
+
 </div>
 </body>
 </html>

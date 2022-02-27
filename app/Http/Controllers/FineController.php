@@ -19,25 +19,29 @@ class FineController extends Controller
     public function index()
     {
 
-        $records = Fine::all();
-        $current_date = date("Y-m-d H:i:s");
-        foreach ($records as $fine){
-            $current_dateDateTime = new \DateTime($current_date);
-            $fine_end_date_DateTime = new \DateTime($fine->fine_end_date);
-            if($current_dateDateTime > $fine_end_date_DateTime ){
-                //$fine->fine_active = 0;
-                $payment = Fine::findOrFail($fine->id);
-                $payment->fine_active = 0;
-                $payment->saveOrFail();
+        if(@\Illuminate\Support\Facades\Auth::user()->hasRole('admin')){
+            $records = Fine::all();
+            $current_date = date("Y-m-d H:i:s");
+            foreach ($records as $fine){
+                $current_dateDateTime = new \DateTime($current_date);
+                $fine_end_date_DateTime = new \DateTime($fine->fine_end_date);
+                if($current_dateDateTime > $fine_end_date_DateTime ){
+                    //$fine->fine_active = 0;
+                    $payment = Fine::findOrFail($fine->id);
+                    $payment->fine_active = 0;
+                    $payment->saveOrFail();
 
+                }
             }
+
+            $records = Fine::all();
+            $loans = Loan::all();
+            $users = User::all();
+
+            return view('fine.index', compact('records', 'users' , 'loans'));
         }
+        return redirect()->route('books.index')->with('error','No tienes permisos');
 
-        $records = Fine::all();
-        $loans = Loan::all();
-        $users = User::all();
-
-        return view('fine.index', compact('records', 'users' , 'loans'));
     }
 
     /**
@@ -116,8 +120,13 @@ class FineController extends Controller
      */
     public function destroy(Fine $fine)
     {
-        $fine->delete();
-        return redirect()->route('fines.index')
-            ->with('success','Penalización eliminada con éxito');
+
+        if(@\Illuminate\Support\Facades\Auth::user()->hasRole('admin')){
+            $fine->delete();
+            return redirect()->route('fines.index')
+                ->with('success','Penalización eliminada con éxito');
+        }
+
+        return redirect()->route('books.index')->with('error','No tienes permisos');
     }
 }

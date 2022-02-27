@@ -21,8 +21,8 @@
         </div>
     @endif
 
-    <div class="container" style="">
-    <table class="table table-bordered table-hover">
+    <div class="container-fluid" style="">
+    <table class="table table-responsive-xl table-bordered table-hover">
         <tr>
             <th scope="col">ID</th>
             <th scope="col">ID Libro</th>

@@ -49,13 +49,17 @@
 
 
     <div class="container">
-    <table class="table table-bordered table-hover">
+    <table class="table table-responsive-lg table-bordered table-hover">
         <tr>
             <th scope="col">ID</th>
             <th scope="col">Nombre</th>
             <th scope="col">Autor</th>
             <th scope="col">Editorial</th>
             <th scope="col">Categoria</th>
+            @if(@Auth::user()->hasRole('admin'))
+             <th scope="col">Disponibilidad libro</th>
+            @endif
+
 
         </tr>
         @foreach ($records as $record)
@@ -70,12 +74,22 @@
                 @endforeach
 
 
+
+
+
             <tr>
                 <td>{{ $record->id }}</td>
                 <td>{{ $record->nombre }}</td>
                 <td>{{ $record->author }}</td>
                 <td>{{ $record->publisher }}</td>
                 <td>{{ $record->category->nombre }}</td>
+                @if(@Auth::user()->hasRole('admin'))
+                    @if( $record->available == true)
+                        <td class="text-dark bg-success"> Disponible</td>
+                    @else
+                        <td class="text-dark bg-danger"> No Disponible</td>
+                    @endif
+                @endif
 
                 <td class="d-flex">
                     <a class="btn btn-sm btn-info m-1" href="{{ route('books.show',$record->id) }}">Show</a>
@@ -96,14 +110,20 @@
                         @foreach ($loans as $loan)
                             @if($loan->user_id == @Auth::user()->id &&  $loan->book_id == $record->id && $loan->returned_date == null )
                                     <?php   $disabled = "disabled";$texto_cantidad="Solicitud ya realizada";?>
-
                                 @else
                                     <?php   $disabled = ""; $texto_cantidad ="Solicitar Préstamo";?>
                             @endif
                         @endforeach
-
-                            <a   href="{{ route('loans.create',"id=".$record->id) }}"> <button style="display: {{$disable_borrrar}}"  class="btn btn-sm btn-success m-1" {{ $disabled }}> {{ $texto_cantidad }}</button></a>
-
+                            @foreach ($loans as $loan)
+                                @if($loan->user_id == @Auth::user()->id && $loan->returned_date == null && $loan->overdue_days != null )
+                                    <?php   $disabled = "disabled"; $texto_cantidad="Tienes un libro sin entregar";?>
+                                @endif
+                            @endforeach
+                        @if($disabled != "")
+                                 <button style="display: {{$disable_borrrar}}"  class="btn btn-sm btn-success m-1" {{ $disabled }}> {{ $texto_cantidad }}</button>
+                            @else
+                                <a   href="{{ route('loans.create',"id=".$record->id) }}"> <button style="display: {{$disable_borrrar}}"  class="btn btn-sm btn-success m-1" {{ $disabled }}> {{ $texto_cantidad }}</button></a>
+                            @endif
                     @endif
                 </td>
             </tr>

@@ -13,7 +13,7 @@
 <!--Navbar-->
 <nav class="navbar navbar-expand-lg navbar-dark primary-color">
     <!-- Navbar brand -->
-    <a class="navbar-brand" href="{{ url('/books') }}">BiblioWeb</a>
+    <a class="navbar-brand" href="{{ url('/') }}">BiblioWeb</a>
     <!-- Collapse button -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
             aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,41 +78,37 @@
                 </div>
             </li>
 
-            @auth()
-                <li class="nav-item dropdown">
+        </ul>
+        <div class="d-flex justify-content-end m-2" >
+            <p class="rounded bg-info">Usuario: <span  class="text-warning">{{@Auth::user()->name }}</span> </p>
+            @if(@Auth::user()->hasRole('cliente'))
+                <p class="rounded bg-info"> Rol Actual: <span  class="text-warning"> Cliente </span> </p>
+            @endif
+            @if(@Auth::user()->hasRole('admin'))
+                <p class="rounded bg-info"> Rol Actual:<span  class="text-warning">  Administrador </span></p>
+            @endif
+        </div>
+        @auth()
+            <li class="nav-item dropdown text-danger border border-dark" style="list-style: none">
+                <a class="dropdown-item" href="{{ route('logout') }}"
+                   onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                    {{ __('Logout') }}
+                </a>
+
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{{ route('logout') }}"
                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                         {{ __('Logout') }}
                     </a>
 
-                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{{ route('logout') }}"
-                           onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                            {{ __('Logout') }}
-                        </a>
-
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </div>
-                </li>
-            @endauth
-
-
-                <div class="d-flex justify-content-end" >
-                    <p class="rounded bg-info">Usuario: <span  class="text-warning">{{@Auth::user()->name }}</span> </p>
-                    @if(@Auth::user()->hasRole('cliente'))
-                     <p class="rounded bg-info"> Rol Actual: <span  class="text-warning"> Cliente </span> </p>
-                    @endif
-                    @if(@Auth::user()->hasRole('admin'))
-                        <p class="rounded bg-info"> Rol Actual:<span  class="text-warning">  Administrador </span></p>
-                    @endif
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
                 </div>
-
-
-        </ul>
+            </li>
+    @endauth
         <!-- Links -->
     </div>
     <!-- Collapsible content -->

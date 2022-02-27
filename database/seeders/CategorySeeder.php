@@ -19,7 +19,9 @@ class CategorySeeder extends Seeder
         DB::table("categories")->insert([
             ["nombre" => "Aventuras"],
             ["nombre" => "Cuentos"],
-            ["nombre" => "Deporte"]
+            ["nombre" => "Deporte"],
+            ["nombre" => "Fantasía"],
+            ["nombre" => "Literatura fantástica"]
         ]);
     }
 }
